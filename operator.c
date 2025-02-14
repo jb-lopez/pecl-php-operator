@@ -14,19 +14,20 @@ static void print_zend_execute_data(const zend_execute_data *execute_data) {
         printf(
             "ZED:\n"
             "\topline:\n"
-            "\t\top1_type (zvar_type): %d (%d)\n"
-            "\t\top2_type (zvar_type): %d (%d)\n"
+            "\t\top1_type (zval_type): %d (%s)\n"
+            "\t\top2_type (zval_type): %d (%s)\n"
             "\t\textended_value: %d\n"
-            "\t\topcode: %d\n"
+            "\t\topcode: %d (%s)\n"
             "\t\tresult_type: %d\n"
             ,
             execute_data->opline->op1_type,
-            Z_TYPE_P(zend_get_zval_ptr(execute_data->opline, execute_data->opline->op1_type, &execute_data->opline->op1, execute_data)),
+            zend_zval_type_name(zend_get_zval_ptr(execute_data->opline, execute_data->opline->op1_type, &execute_data->opline->op1, execute_data)),
             execute_data->opline->op2_type,
-            Z_TYPE_P(zend_get_zval_ptr(execute_data->opline, execute_data->opline->op2_type, &execute_data->opline->op2, execute_data)),
+            zend_zval_type_name(zend_get_zval_ptr(execute_data->opline, execute_data->opline->op2_type, &execute_data->opline->op2, execute_data)),
             execute_data->opline->extended_value,
             execute_data->opline->opcode,
-            execute_data->opline->result_type
+            zend_get_opcode_name(execute_data->opline->opcode),
+            (execute_data->opline->result_type)
         );
     }
 }
@@ -100,11 +101,13 @@ static int handle_operator(zend_execute_data *execute_data, char *magic_method) 
     zend_fcall_info_cache fcc = empty_fcall_info_cache;
     zend_string * magic_method_name = zend_string_init(magic_method, strlen(magic_method), 0);
 
+    DEBUG_PRINTF("checking if op1 has a magic method\n")
     if (!operator_get_method(magic_method_name, op1, &fci, &fcc)) {
         /* Not an overloaded call */
         DEBUG_PRINTF("Call %s is not overloaded\n", magic_method)
         return ZEND_USER_OPCODE_DISPATCH;
     }
+    DEBUG_PRINTF("Call %s is overloaded\n", magic_method)
 
     fci.size = sizeof(zend_fcall_info);
     fci.retval = EX_VAR(opline->result.var);
