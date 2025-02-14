@@ -73,9 +73,9 @@ static int handle_operator(zend_execute_data *execute_data, char *magic_method) 
     if (opline->op1_type == IS_UNUSED) {
         op1 = EX_VAR(opline->result.var);
     } else {
-        op1 = zend_get_zval_ptr(execute_data->opline, execute_data->opline->op1_type, &execute_data->opline->op1, execute_data);
+        op1 = zend_get_zval_ptr(opline, opline->op1_type, &opline->op1, execute_data);
     }
-    op2 = zend_get_zval_ptr(execute_data->opline, execute_data->opline->op2_type, &execute_data->opline->op2, execute_data);
+    op2 = zend_get_zval_ptr(opline, opline->op2_type, &opline->op2, execute_data);
 
     if ((Z_TYPE_P(op1) != IS_OBJECT)) {
         DEBUG_PRINTF("op1 is not an object\n")
@@ -118,6 +118,7 @@ static int handle_operator(zend_execute_data *execute_data, char *magic_method) 
     fcc.called_scope = Z_OBJCE_P(op1);
     fcc.object = Z_OBJ_P(op1);
     fcc.function_handler = zend_hash_find_ptr(&Z_OBJCE_P(op1)->function_table, magic_method_name);
+    zend_string_release(magic_method_name);
 
     if (fcc.function_handler == NULL) {
         DEBUG_PRINTF("Function handler is null\n")
@@ -127,11 +128,17 @@ static int handle_operator(zend_execute_data *execute_data, char *magic_method) 
     DEBUG_PRINTF("Calling %s\n", magic_method)
     if (zend_call_function(&fci, &fcc) == FAILURE) {
         DEBUG_PRINTF("Function call failed\n")
+        php_error(E_WARNING, "Failed calling %p::%s()", Z_OBJCE_P(op1)->name, Z_STRVAL(fci.function_name));
+        ZVAL_NULL(fci.retval);
         return ZEND_USER_OPCODE_DISPATCH;
     }
     DEBUG_PRINTF("Function call succeeded\n")
 
-    execute_data->opline++;
+    if (opline->result_type == IS_UNUSED) {
+        ZVAL_NULL(fci.retval);
+    }
+
+    EX(opline) = opline + 1;
     return ZEND_USER_OPCODE_CONTINUE;
 }
 

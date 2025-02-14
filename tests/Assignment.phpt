@@ -19,6 +19,13 @@ var_dump(is_object($a));
 var_dump($a = CONST_TEST);
 var_dump(is_object($a));
 
+// Test String Assignment `$a::__assign($b)`
+echo "Test String Assignment\n";
+var_dump($a = "World!");
+var_dump(is_object($a));
+var_dump($a = CONST_TEXT);
+var_dump(is_object($a));
+
 // The next series of tests are for combinatorial assignment operators.
 
 // Test Addition Assignment `$a::__add_assign($b)`
@@ -118,11 +125,53 @@ $a->value = "Hello ";
 var_dump($a .= CONST_TEXT);
 var_dump(is_object($a));
 
+// Sometimes I have seen core dumps with assignments. These tests here are to provoke that state.
+function testExtraAssignments(OperatorOverloading $a) {
+    var_dump($a = "Hello World!");
+    var_dump($a = 1);
+    var_dump($a = 1.5);
+    var_dump($a = CONST_TEST);
+    var_dump($a = CONST_TEXT);
+    // Uncaptured assignments were causing these core dumps.
+    $a = "Hello World!";
+    $a = 1;
+    $a = 1.5;
+    $a = CONST_TEST;
+    $a = CONST_TEXT;
+}
+
+
+echo "Testing Extra Assignments\n";
+unset($a);
+
+echo "Testing with no initial data\n";
+testExtraAssignments(new OperatorOverloading());
+
+echo "Testing with CONST_TEST passed as initial data\n";
+testExtraAssignments(new OperatorOverloading(CONST_TEST));
+
+echo "Testing with CONST_TEXT passed as initial data\n";
+testExtraAssignments(new OperatorOverloading(CONST_TEXT));
+
+echo "Testing with 1 passed as initial data\n";
+testExtraAssignments(new OperatorOverloading(1));
+
+echo "Testing with 1.5 passed as initial data\n";
+testExtraAssignments(new OperatorOverloading(1.5));
+
+echo "Testing with 'Hello' passed as initial data\n";
+testExtraAssignments(new OperatorOverloading("Hello"));
+
 --EXPECT--
 Test Assignment
 int(2)
 bool(true)
 int(10)
+bool(true)
+Test String Assignment
+string(6) "World!"
+bool(true)
+string(6) "Globe!"
 bool(true)
 Test Addition Assignment
 int(3)
@@ -184,3 +233,40 @@ string(12) "Hello World!"
 bool(true)
 string(12) "Hello Globe!"
 bool(true)
+Testing Extra Assignments
+Testing with no initial data
+string(12) "Hello World!"
+int(1)
+float(1.5)
+int(10)
+string(6) "Globe!"
+Testing with CONST_TEST passed as initial data
+string(12) "Hello World!"
+int(1)
+float(1.5)
+int(10)
+string(6) "Globe!"
+Testing with CONST_TEXT passed as initial data
+string(12) "Hello World!"
+int(1)
+float(1.5)
+int(10)
+string(6) "Globe!"
+Testing with 1 passed as initial data
+string(12) "Hello World!"
+int(1)
+float(1.5)
+int(10)
+string(6) "Globe!"
+Testing with 1.5 passed as initial data
+string(12) "Hello World!"
+int(1)
+float(1.5)
+int(10)
+string(6) "Globe!"
+Testing with 'Hello' passed as initial data
+string(12) "Hello World!"
+int(1)
+float(1.5)
+int(10)
+string(6) "Globe!"
