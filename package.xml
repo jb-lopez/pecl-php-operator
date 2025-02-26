@@ -37,25 +37,26 @@ Note: This extension will work with PHP 8.0-8.1, but will segfault when you over
  <contents>
   <dir name="/">
    <dir name=".idea">
-    <file name="c_cpp_properties.json" role="config"/>
+    <file name="c_cpp_properties.json" role="cfg"/>
    </dir>
    <dir name=".vscode">
-    <file name="c_cpp_properties.json" role="config"/>
+    <file name="c_cpp_properties.json" role="cfg"/>
    </dir>
-   <file name="clean.sh" role="build helper"/>
+   <file name="clean.sh" role="script"/>
    <file name="config.m4" role="src"/>
    <file name="config.w32" role="src"/>
    <file name="CREDITS" role="doc"/>
-   <file name="dev.sh" role="build helper"/>
-   <file name="Dockerfile" role="build helper"/>
+   <file name="dev.sh" role="script"/>
+   <file name="Dockerfile" role="script"/>
    <file name="EXPERIMENTAL" role="doc"/>
-   <file name="ext-operator.ini" role="config"/>
-   <file name="make.sh" role="build helper"/>
+   <file name="ext-operator.ini" role="cfg"/>
+   <file name="LICENSE" role="doc"/>
+   <file name="make.sh" role="script"/>
    <file name="operator.c" role="src"/>
    <file name="operator.h" role="src"/>
    <file name="operator_macros.h" role="src"/>
    <dir name="output">
-    <file name=".gitkeep" role="vcs"/>
+    <file name=".gitkeep" role="test"/>
    </dir>
    <file name="package.xml" role="doc"/>
    <file name="README.md" role="doc"/>
@@ -65,7 +66,7 @@ Note: This extension will work with PHP 8.0-8.1, but will segfault when you over
     <file name="Bitwise.phpt" role="test"/>
     <file name="Comparison.phpt" role="test"/>
     <file name="Crementing.phpt" role="test"/>
-    <file name="OperatorOverloading.inc" role="test helper"/>
+    <file name="OperatorOverloading.inc" role="test"/>
     <file name="PhpBug56904.phpt" role="test"/>
     <file name="String.phpt" role="test"/>
    </dir>
