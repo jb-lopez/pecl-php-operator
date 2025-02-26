@@ -1,4 +1,5 @@
-FROM php:8.4-bookworm
+ARG PHP_VERSION=8.4-bullseye
+FROM php:${PHP_VERSION}
 
 RUN apt install -y $PHPIZE_DEPS
 

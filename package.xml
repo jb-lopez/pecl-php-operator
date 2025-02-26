@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.9.0" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
-http://pear.php.net/dtd/tasks-1.0.xsd
-http://pear.php.net/dtd/package-2.0
-http://pear.php.net/dtd/package-2.0.xsd">
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.0" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>operator</name>
  <channel>pecl.php.net</channel>
  <summary>Operator overloading for Objects</summary>
- <description>Operator overloading for: +, -, *, /, %, **, &lt;&lt;, &gt;&gt;, ., |, &amp;, ^, ~, !, ++, --,
-+=, -=, *=, /=, %=, **=, &lt;&lt;=, &gt;&gt;=, .=, |=, &amp;=, ^=, ~=,
-==, !=, ===, !==, &lt;, &lt;=, and &lt;=&gt; operators.
+ <description>Operator overloading for:
++, -, *, /, %, **, &lt;&lt;, &gt;&gt;, ., |, &amp;, ^, ~, ++, --,
+=, +=, -=, *=, /=, %=, **=, &lt;&lt;=, &gt;&gt;=, .=, |=, &amp;=, ^=,
+==, !=, &lt;&gt;, ===, !==, &lt;, &lt;=, &gt;, &gt;=, and &lt;=&gt; operators.
 
  </description>
  <lead>
-  <name>Sara Golemon</name>
-  <user>pollita</user>
-  <email>pollita@php.net</email>
+  <name>Joshua Lopez</name>
+  <user>jblopez</user>
+  <email>lopezcoder@gmail.com</email>
   <active>yes</active>
  </lead>
- <date>2017-03-08</date>
- <time>20:54:00</time>
+ <date>2025-02-26</date>
+ <time>22:47:49</time>
  <version>
-  <release>1.0</release>
-  <api>1.0</api>
+  <release>0.5.0</release>
+  <api>0.5.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -29,31 +27,55 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
  <notes>
-* Rewrote for PHP7, dropped PHP5 support
-* Removed pre/post inc/dec support for objects in object properties (this will come back eventually)
-* Added pow, assign-pow, and spaceship operators
+This is a complete rewrite.
+* Updated to add support for PHP 8.2+. Support for this extension was lost in PHP 7.4 because of a change in the way that assignment operators are handled by the engine.
+* Added support for the spaceship operator.
+* Added support for the greater than and greater than or equal to operators without the need for a parser patch.
+
+Note: This extension will work with PHP 8.0-8.1, but will segfault when you overload the assignment operator and change data types from a non-string to a string, and sometimes from a null to a non-null. If you wish to use it in PHP &lt; 8.2, you have been warned.
  </notes>
  <contents>
   <dir name="/">
+   <dir name=".idea">
+    <file name="c_cpp_properties.json" role="config"/>
+   </dir>
+   <dir name=".vscode">
+    <file name="c_cpp_properties.json" role="config"/>
+   </dir>
+   <file name="clean.sh" role="build helper"/>
+   <file name="config.m4" role="src"/>
+   <file name="config.w32" role="src"/>
+   <file name="CREDITS" role="doc"/>
+   <file name="dev.sh" role="build helper"/>
+   <file name="Dockerfile" role="build helper"/>
+   <file name="EXPERIMENTAL" role="doc"/>
+   <file name="ext-operator.ini" role="config"/>
+   <file name="make.sh" role="build helper"/>
+   <file name="operator.c" role="src"/>
+   <file name="operator.h" role="src"/>
+   <file name="operator_macros.h" role="src"/>
+   <dir name="output">
+    <file name=".gitkeep" role="vcs"/>
+   </dir>
+   <file name="package.xml" role="doc"/>
+   <file name="README.md" role="doc"/>
    <dir name="tests">
-    <file name="binary.phpt" role="test" />
-    <file name="binary_assign.phpt" role="test" />
-    <file name="bug56904.phpt" role="test" />
-    <file name="compare.phpt" role="test" />
-    <file name="incdec.phpt" role="test" />
-    <file name="unary.phpt" role="test" />
-   </dir> <!-- //tests -->
-   <file name="config.m4" role="src" />
-   <file name="config.w32" role="src" />
-   <file name="CREDITS" role="doc" />
-   <file name="EXPERIMENTAL" role="doc" />
-   <file name="operator.c" role="src" />
-  </dir> <!-- / -->
+    <file name="Arithemetic.phpt" role="test"/>
+    <file name="Assignment.phpt" role="test"/>
+    <file name="Bitwise.phpt" role="test"/>
+    <file name="Comparison.phpt" role="test"/>
+    <file name="Crementing.phpt" role="test"/>
+    <file name="OperatorOverloading.inc" role="test helper"/>
+    <file name="PhpBug56904.phpt" role="test"/>
+    <file name="String.phpt" role="test"/>
+   </dir>
+  </dir>
+  <!-- / -->
  </contents>
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>8.2.0</min>
    </php>
    <pearinstaller>
     <min>1.4.0b1</min>
@@ -61,8 +83,27 @@ http://pear.php.net/dtd/package-2.0.xsd">
   </required>
  </dependencies>
  <providesextension>operator</providesextension>
- <extsrcrelease />
+ <extsrcrelease/>
  <changelog>
+  <release>
+   <date>2025-02-12</date>
+   <time>22:47:49</time>
+   <version>
+    <release>0.5.0</release>
+    <api>0.5.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP</license>
+   <notes>
+* Updated to add support for PHP 8.2+. Support for this extension was lost in PHP 7.4 because of a change in the way that assignment operators are handled by the engine.
+* Added support for the greater than and greater than or equal to operators without the need for a parser patch.
+
+Note: This extension will work with PHP 8.0-8.1, but will segfault when you overload the assignment operator and change data types from a non-string to a string, and sometimes from a null to a non-null. If you wish to use it in PHP &lt; 8.2, you have been warned.
+   </notes>
+  </release>
   <release>
    <date>2009-11-05</date>
    <time>17:54:16</time>

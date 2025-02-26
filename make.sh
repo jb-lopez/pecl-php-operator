@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+./clean.sh
 phpize
 ./configure --enable-operator=shared
 make
