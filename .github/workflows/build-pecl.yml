@@ -1,0 +1,68 @@
+name: Build with PECL
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags-ignore:
+      - "**"
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        php-image:
+          - php:8.2-cli
+          - php:8.2-cli-alpine
+          - php:8.3-cli
+          - php:8.3-cli-alpine
+          - php:8.4-cli
+          - php:8.4-cli-alpine
+    name: Install on ${{ matrix.php-image }}
+    runs-on: ubuntu-latest
+    container: ${{ matrix.php-image }}
+    steps:
+      -
+        name: Install system dependencies
+        run: |
+          CONTAINER="${{ matrix.php-image }}"
+          if [ "${CONTAINER#*alpine}" != "$CONTAINER" ]; then
+            apk upgrade -U
+            apk add $PHPIZE_DEPS
+          else
+            apt-get update -q
+            apt-get upgrade -qy
+          fi
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Create temporary directory
+        run: cd "$(mktemp -d)"
+      -
+        name: Create package
+        run: pecl package "$GITHUB_WORKSPACE/package.xml"
+      -
+        name: Compile package
+        run: printf '' | MAKE="make -j$(nproc)" pecl install operator-*.tgz
+      -
+        name: Enable extension
+        run: docker-php-ext-enable operator
+      -
+        name: Check for PHP startup warnings
+        run: |
+          php -d display_errors=stderr -d display_startup_errors=1 -d error_reporting=-1 -r ';' 2>./php-startup-warnings
+          if [ -s ./php-startup-warnings ]; then
+            echo 'The PHP extension was successfully installed, but PHP raised these warnings:' >&2
+            cat ./php-startup-warnings >&2
+            exit 1
+          fi
+          echo "PHP didn't raise any warnings at startup."
+      -
+        name: Inspect extension
+        run: php --ri operator
