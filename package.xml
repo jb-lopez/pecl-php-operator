@@ -58,7 +58,6 @@ Note: This extension will work with PHP 8.0-8.1, but will segfault when you over
    <dir name="output">
     <file name=".gitkeep" role="test"/>
    </dir>
-   <file name="package.xml" role="doc"/>
    <file name="README.md" role="doc"/>
    <dir name="tests">
     <file name="Arithemetic.phpt" role="test"/>
