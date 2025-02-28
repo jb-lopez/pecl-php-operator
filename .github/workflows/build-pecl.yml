@@ -66,3 +66,6 @@ jobs:
       -
         name: Inspect extension
         run: php --ri operator
+      -
+        name: Run tests
+        run: php "$(php-config --prefix)/lib/php/build/run-tests.php" -q --color tests
